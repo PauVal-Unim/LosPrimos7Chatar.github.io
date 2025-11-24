@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHATARRERÍA LOS PRIMOS 7</title>
+    <!-- Carga de Tailwind CSS para un diseño moderno y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Estilos generales */
+        :root {
+            --color-primary: #161f27; /* Azul Corporativo */
+            --color-secondary: #ffc107; /* Amarillo de Acento */
+            --color-text: #343a40;
+            --color-dark: #1f2937;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9;
+            color: var(--color-text);
+        }
+
+        /* Estilo para el botón de navegación activo */
+        .nav-active {
+            background-color: var(--color-secondary);
+            color: var(--color-dark) !important;
+            font-weight: 700;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo para el Banner/Encabezado */
+        .header-banner {
+            background-color: var(--color-primary);
+            color: white;
+            border-bottom: 8px solid var(--color-secondary);
+        }
+
+        /* Estilo para las tarjetas de contenido */
+        .content-card {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px rgba(0, 77, 153, 0.1); 
+            min-height: 70vh;
+        }
+        
+        /* Títulos de sección */
+        .main-title {
+            font-size: 2.5rem; /* text-4xl */
+            font-weight: 800; /* font-extrabold */
+            color: var(--color-primary);
+            border-bottom: 5px solid var(--color-secondary);
+            padding-bottom: 0.75rem;
+            margin-bottom: 2.5rem;
+            line-height: 1;
+        }
+
+        /* Contenedor responsivo para el mapa */
+        .map-responsive {
+            overflow: hidden;
+            /* AUMENTADO: de 56.25% (16:9) a 75% (4:3) para hacerlo más grande */
+            padding-bottom: 75%; 
+            position: relative;
+            height: 0;
+            border-radius: 0.5rem;
+        }
+        .map-responsive iframe {
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            border: 0;
+        }
+
+        /* Animación de carga de página */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilos para el menú móvil */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Encabezado Fijo con Banner Prominente -->
+    <header class="header-banner shadow-2xl sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
+            
+            <!-- Logo y Título Principal -->
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <!-- TAMAÑO DEL LOGO CORREGIDO: Aumentado a w-32 h-32 (128x128px) y object-contain -->
+                <img src="img/logo.png" 
+                     alt="Logo Empresa" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/128x128/ffc107/004d99?text=PRIMOS+7';"
+                     class="w-32 h-32 object-contain rounded-full border-4 border-white shadow-lg hidden sm:block">
+
+                <div>
+                    <h1 class="text-4xl font-extrabold tracking-tight">
+                        CHATARRERÍA LOS PRIMOS 7
+                    </h1>
+                    <p class="text-lg font-medium mt-1">
+                        UNIMINUTO | ANÁLISIS DEL PROCESO ADMINISTRATIVO
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Información Adicional, AHORA INCLUYE FECHA Y HORA DINÁMICA -->
+            <div class="text-right text-sm">
+                <p id="current-datetime" class="mt-2 font-medium text-yellow-300"></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal con Sidebar de Navegación -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            
+            <!-- Sidebar / Navegación -->
+            <nav id="sidebar" class="md:col-span-1 p-4 bg-white rounded-xl shadow-lg sidebar h-max sticky top-32">
+                <h3 class="text-xl font-bold mb-4 text-gray-700 border-b pb-2">Fases del Proceso</h3>
+                <ul class="space-y-2 flex flex-wrap md:flex-col">
+                    <li><button data-page="inicio" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="home" class="w-5 h-5 mr-2"></i> Inicio</button></li>
+                    <li><button data-page="planeacion" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="target" class="w-5 h-5 mr-2"></i> 1. Planeación</button></li>
+                    <li><button data-page="organizacion" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="layout-grid" class="w-5 h-5 mr-2"></i> 2. Organización</button></li>
+                    <li><button data-page="direccion" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="user-check" class="w-5 h-5 mr-2"></i> 3. Dirección</button></li>
+                    <li><button data-page="control" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="gauge" class="w-5 h-5 mr-2"></i> 4. Control</button></li>
+                    <li><button data-page="conclusiones" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="sparkles" class="w-5 h-5 mr-2"></i> 5. Conclusiones</button></li>
+                    <li><button data-page="Preguntas" class="w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-300 flex items-center nav-link"><i data-lucide="message-square" class="w-5 h-5 mr-2"></i> 6. Preguntas</button></li>
+                </ul>
+            </nav>
+
+            <!-- Área de Contenido Dinámico -->
+            <div id="content-area" class="md:col-span-3 content-card fade-in">
+                <!-- El contenido de la página se cargará aquí con JavaScript -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12 p-6 md:p-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                
+                <!-- Columna 1: Contacto Principal -->
+                <div>
+                    <h5 class="text-lg font-bold text-yellow-400 mb-3">Contacto Principal</h5>
+                    <p class="text-sm">📞 Teléfono: (57) 310-244-7583</p>
+                    <p class="text-sm">✉️ Email: info@losprimos7.com</p>
+                </div>
+                
+                <!-- Columna 2: Sedes y Operación -->
+                <div>
+                    <h5 class="text-lg font-bold text-yellow-400 mb-3">Sedes y Operación</h5>
+                    <p class="text-sm">📍 Sede Central: Calle 90b #93-10, Engativa, Bogota D.C</p>
+                    <p class="text-sm">🕒 Horario: Lunes a Viernes 10:00 AM - 10:00 PM</p>
+                </div>
+                
+                <!-- Columna 3: Información del Proyecto -->
+                <div class="md:text-right">
+                    <h5 class="text-lg font-bold text-yellow-400 mb-3">UNIMINUTO - Proceso Administrativo</h5>
+                    <p class="text-sm">Análisis P.A. de la empresa "Los Primos 7".</p>
+                    <!-- Usamos JavaScript para obtener el año actual, como alternativa a PHP -->
+                    <p class="text-xs mt-2">&copy; <span id="current-year">2025</span> Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script de Contenido y Lógica de Navegación (JS) -->
+    <script>
+        // Objeto que contiene el contenido HTML para cada "página"
+        const pageContent = {
+            inicio: `
+                <h2 class="main-title">Inicio: Presentación de la Empresa</h2>
+                
+                <!-- REORGANIZACIÓN: Columna 1 (Texto) y Columna 2 (Imagen) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-10">
+                    
+                    <!-- Columna 1 (Izquierda): Textos e Información Principal -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-semibold text-gray-800">CHATARRERÍA LOS PRIMOS 7</h3>
+                        
+                        <!-- Historia y Contexto -->
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-medium text-gray-700 flex items-center">
+                                <i data-lucide="compass" class="w-5 h-5 mr-2 text-blue-500"></i>
+                                Historia y Contexto
+                            </h4>
+                            <p class="text-gray-600">
+                               La Chatarrería Los Primos 7 nació en Bogotá D. Con el tiempo, y motivados por los buenos resultados, decidieron abrir su segundo punto en Antonio Nariño, lo que les permitió ampliar su cobertura, atender a más personas y seguir generando empleo. Más adelante, sumaron un tercer punto en Los Mártires, consolidando a Los Hermanos 7 como una chatarrería reconocida en diferentes localidades de Bogotá. Pero la historia de Los Hermanos 7 no solo se trata de expansión y de economía. Desde sus inicios, la chatarrería ha tenido como objetivo principal aportar a la sostenibilidad, fomentando la cultura del reciclaje y demostrando que los negocios pueden ir de la mano con el cuidado del entorno.
+                            </p>
+                             <p class="text-gray-600">
+                                Hoy, la Chatarrería se destaca no solo por su labor comercial, sino también por el impacto social y ambiental que ha generado en Bogotá. La unión de tres personas con un sueño común se convirtió en una empresa familiar que refleja esfuerzo, compromiso y visión de futuro. Su historia es un ejemplo de cómo, a partir de la necesidad de buscar ingresos propios, también es posible contribuir al bienestar colectivo y a la protección del planeta.
+                            </p>
+                        </div>
+                        
+                        <!-- Ubicación Principal (Solo texto de dirección) -->
+                        <div class="space-y-2 pt-4 border-t border-gray-100">
+                            <h4 class="text-xl font-medium text-gray-700 flex items-center">
+                                <i data-lucide="map-pin" class="w-5 h-5 mr-2 text-blue-500"></i>
+                                Dirección Principal
+                            </h4>
+                            <p class="text-gray-600 font-semibold">
+                                Calle 90b #93-10, Bogotá, Colombia
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Columna 2 (Derecha): Imagen de la Empresa -->
+                    <div class="space-y-4 pt-4 md:pt-0">
+                        <h4 class="text-xl font-medium text-gray-700 flex items-center mb-4">
+                            <i data-lucide="image" class="w-5 h-5 mr-2 text-blue-500"></i>
+                            Vista de las Instalaciones
+                        </h4>
+                        <!-- Imagen de la Empresa (Placeholder) - Hecha más grande para rellenar la columna -->
+                        <img src="img/instalaciones.jpg" 
+                            alt="Imagen de la Empresa o Contexto" 
+                            class="w-full h-auto rounded-lg shadow-xl border-4 border-gray-100 object-cover">
+                        <p class="text-xs text-center text-gray-500 mt-2"></p>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DEL MAPA: DEBAJO DE TODO EL CONTENIDO (Ahora más grande gracias al CSS) -->
+                <div class="mt-12">
+                    <h4 class="text-2xl font-bold text-gray-700 mb-4 flex items-center border-t pt-6">
+                        <i data-lucide="globe" class="w-6 h-6 mr-2 text-color-primary"></i>
+                        Mapa de Ubicación: Sede Principal
+                    </h4>
+                    
+                    <!-- MAPA DE GOOGLE MAPS -->
+                    <div class="map-responsive shadow-2xl border-4 border-gray-300">
+                        <iframe 
+                            src="https://maps.google.com/maps?q=calle%2090b%20%2393-10%20bogota&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            `,
+            planeacion: `
+                <h2 class="main-title">1. Planeación: Fundamentos de la Estrategia</h2>
+                <p class="text-lg font-medium text-gray-700 mb-6">
+                    La Planeación es la primera fase del ciclo administrativo, donde se define el rumbo de la empresa. Aquí se establecen los objetivos de largo y corto plazo.
+                </p>
+                
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Misión, Visión, Valores -->
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-bold text-blue-700 mb-3 border-b-2 pb-1">Identidad Organizacional</h3>
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+                            <h4 class="font-bold text-lg text-blue-800 flex items-center"><i data-lucide="send" class="w-5 h-5 mr-2"></i> Misión</h4>
+                            <p class="text-sm text-gray-600">Somos una organización que se dedica a la recolección de material reutilizado, recibimos todo
+tipo de material reciclable con el fin de mitigar la contaminación del medio ambiente y preservar
+los recursos naturales. Lo hacemos mediante la implementación de procesos de recolección
+selectiva y capacitaciones para concientizar a una mejor sostenibilidad ambiental y social.</p>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+                            <h4 class="font-bold text-lg text-blue-800 flex items-center"><i data-lucide="eye" class="w-5 h-5 mr-2"></i> Visión</h4>
+                            <p class="text-sm text-gray-600">La organización se visualiza a futuro con más puntos de compra y venta de material reciclable,
+con una buena estabilidad económica, generando un impacto positivo con el medio ambiente,
+reduciendo la contaminación y haciendo uso responsable de los residuos. Teniendo en cuenta
+que con la responsabilidad, conciencia y empoderamiento seremos una organización fructuosa
+con el medio ambiente.</p>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+                            <h4 class="font-bold text-lg text-blue-800 flex items-center"><i data-lucide="award" class="w-5 h-5 mr-2"></i> Valores</h4>
+                            <p class="text-sm text-gray-600">
+                                <ul>
+                                <li>Responsabilidad Ambiental</li> 
+                                <li>Seguridad</li>
+                                <li>Dedicación</li>
+                                <li>Innovación</li>
+                                <li>Respeto</li>
+                                <li>Sostenibilidad</li>
+                                <li>Colaboración</li>
+                                <li>Perseverancia</li>
+                                <li>Calidad del Servicio</li>
+                                <li>Empoderamiento</li>
+                                </ul>   
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Objetivos y Políticas -->
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-bold text-blue-700 mb-3 border-b-2 pb-1">Aplicación de Estrategias</h3>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2 text-gray-700">Objetivos Estratégicos (SMART)</h4>
+                            <ul class="list-disc ml-6 space-y-2 text-gray-600">
+                                <li>Fortalecer la identidad y visibilidad del negocio a través de estrategias de publicidad creativa que lleguen tanto a recicladores como a compradores, destacándose frente a la competencia en zonas como Engativá.</li>
+                                <li>Mejorar la organización interna y la eficiencia del trabajo, distribuyendo tareas claras entre el equipo y buscando capacitaciones que aumenten la empleabilidad y el sentido de pertenencia.</li>
+                                <li>Incorporar tecnología y herramientas modernas, como básculas digitales, sistemas de seguridad y controles de inventario, que permitan prestar un servicio más confiable y transparente. </li>
+                                <li>Monitorear los cambios del mercado y de las normativas, adaptándose con rapidez a las variaciones en los precios de los materiales y a las leyes que regulan la actividad de reciclaje</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2 text-gray-700">Políticas Clave Evidenciadas</h4>
+                            <p class="text-gray-600"></p>
+                            <div class="mt-2 space-y-1 text-sm text-gray-500">
+                                <p class="flex items-start"><i data-lucide="zap" class="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-amber-500"></i> Política de atención a los clientes y proveedores: Aplica a todo nuestro equipo y a cualquier persona que se acerque a nuestras instalaciones.</p>
+                                <p class="flex items-start"><i data-lucide="zap" class="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-amber-500"></i> Política de gestión y manejo de materiales: Aplica todo lo que trabajemos en la chatarrería desde el que recibe el material hasta el que lo clasifica.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            organizacion: `
+                <h2 class="main-title">2. Organización: Estructura y Asignación de Recursos</h2>
+                <p class="text-lg font-medium text-gray-700 mb-6">
+                    La Organización convierte los planes en una estructura de tareas, recursos y responsabilidades. Es la fase mecánica del proceso administrativo.
+                </p>
+                
+
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-3 border-b-2 pb-1">Estructura y Departamentalización</h3>
+                    
+                    <p class="text-gray-600">
+                    </p>
+
+                    <!-- Imagen para el Organigrama -->
+                    <div class="bg-gray-100 p-6 rounded-lg border border-gray-300 overflow-x-auto text-center">
+                        <img src="img/organigrama.png" 
+                             alt="Diagrama de la Estructura Organizacional" 
+                             class="mx-auto w-full max-w-xl rounded-md shadow-lg border-2 border-gray-200">
+                        <p class="text-xs text-gray-500 mt-2"></p>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-blue-700 mb-3 border-b-2 pb-1">Descripción de Cargos</h3>
+                    <ul class="list-disc ml-6 text-gray-600 space-y-2">
+                        <li>Gerente General: Es el eje estrategico y legal de la empresa, responsable de trazar el rumbo a largo plazo mediante la definición de la estrategia de negocio y las metas financieras que guian las operaciones.</li>
+                        <li>Jefe Administrativo y Comercial: Es fundamental para la salud economica y la transparencia legal de la empresa, articulando las actividades comerciales y de soporte administrativo.</li>
+                        <li>Jefe Asistente de Compras y Ventas: Asegura la fluidez y la trazabilidad de las operaciones diarias a traves de la gen eración y gestión de toda la documentación comercial (Ordenes de compra, Cotizaciones, Facturas y Guias de Remisión)</li>
+                        <li>Jefe Técnico de Procesamiento: Constituye el corazón de la producción y acondicionamiento de la chatarra, implicando la operación directa de maquinaria siempre bajo los estrictos protocolos de Seguridad y Salud en el trabajo.</li>
+                        <li>Asistente Contable: Es el soporte diario de la función financiera, siendo responsable de procesar y conciliar los movimientos bancarios, garantizando que los registros de la empresa coincidan con lo registrado.</li>
+
+                    </ul>
+                </div>
+            `,
+            direccion: `
+                <h2 class="main-title">3. Dirección: Ejecución y Liderazgo</h2>
+                <p class="text-lg font-medium text-gray-700 mb-6">
+                    La Dirección es la fase dinámica, donde se ponen en marcha los planes mediante la influencia interpersonal, la motivación y la supervisión del personal.
+                </p>
+                
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Liderazgo -->
+                    <div class="p-5 bg-yellow-50 rounded-lg border border-yellow-300 shadow-sm space-y-2">
+                        <i data-lucide="hand-heart" class="w-8 h-8 text-yellow-600 mb-2"></i>
+                        <h4 class="font-bold text-lg text-gray-800">Estilo de Liderazgo</h4>
+                        <p class="text-sm text-gray-600">Potenciar un liderazgo participativo y transformacional que mejore la toma de decisiones y el clima laboral. </p>
+                    </div>
+                    <!-- Comunicación Afectiva-->
+                    <div class="p-5 bg-yellow-50 rounded-lg border border-yellow-300 shadow-sm space-y-2">
+                        <i data-lucide="message-circle" class="w-8 h-8 text-yellow-600 mb-2"></i>
+                        <h4 class="font-bold text-lg text-gray-800">Flujo de Comunicación</h4>
+                        <p class="text-sm text-gray-600">Garantizar una comunicación clara, oportuna y organizada entre todas las sedes y niveles de la Chatarrería Los Primos 7, fortaleciendo la transparencia y la coordinación operativa.</p>
+                    </div>
+                    <!-- Motivación -->
+                    <div class="p-5 bg-yellow-50 rounded-lg border border-yellow-300 shadow-sm space-y-2">
+                        <i data-lucide="zap" class="w-8 h-8 text-yellow-600 mb-2"></i>
+                        <h4 class="font-bold text-lg text-gray-800">Estrategias de Motivación</h4>
+                        <p class="text-sm text-gray-600">Fortalecer el sentido de pertenencia, mejorar el desempeño y mantener un equipo comprometido con la sostenibilidad y el servicio. </p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-3 border-b-2 pb-1">Resolución de Conflictos</h3>
+                    <p class="text-gray-600 italic p-4 bg-gray-50 border-l-4 border-yellow-500">
+                    La organización busca mantener un clima laboral sano y de colaboración. Teniendo en cuenta que
+                    cuando surgen diferencias, se aplica un proceso de mediación interna liderado por los fundadores,
+                    quienes escuchan ambas partes, analizan las causas del problema y buscan una solución justa.</p>
+                    <p class="text-gray-600 italic p-4 bg-gray-50 border-l-4 border-yellow-500">También se fomenta la prevención de conflictos a través de la buena comunicación, el trabajo en equipo y el respeto mutuo. El objetivo es que todos los colaboradores se sientan escuchados y valorados, evitando tensiones que afecten el ambiente laboral o la atención al cliente</p>
+                    <p class="text-gray-600 italic p-4 bg-gray-50 border-l-4 border-yellow-500">La dirección de la organización Chatarrería Los Primos 7 se caracteriza por la cercanía, la cooperación y el liderazgo participativo. Gracias a una comunicación fluida, la motivación constante del personal y la toma conjunta de decisiones, la empresa ha logrado mantener su compromiso con el medio ambiente y consolidarse como una organización sostenible, competitiva y responsable con la comunidad. </p>
+                </div> 
+            `,
+            control: `
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-2">4. Control: Medición y Corrección</h2>
+        <p class="text-lg font-medium text-gray-700 mb-8 max-w-4xl">
+            El Control es la etapa final que garantiza que los resultados reales se ajusten a los planes. Implica medir el desempeño, identificar desviaciones y aplicar las correcciones necesarias para el cumplimiento de los objetivos estratégicos.
+        </p>
+
+        <!-- INDICADORES CLAVE DE DESEMPEÑO - OBJETIVO 1 -->
+        <div class="bg-white shadow-xl rounded-xl p-6 mb-10">
+            <h3 class="text-2xl font-bold text-blue-700 mb-4 border-b-2 border-blue-100 pb-2">
+                Objetivo 1: Fortalecer la identidad y la visibilidad del negocio
+            </h3>
+            <p class="text-gray-600 mb-4">Métricas enfocadas en el crecimiento de clientes y la percepción de marca.</p>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 kpi-table rounded-lg">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tl-lg">KPI</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Tipo</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Fórmula</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Meta</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Responsable</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Evaluación</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tr-lg">Mecanismo de Corrección</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-4 py-4 font-semibold text-gray-800">Crecimiento de Clientes Nuevos</td>
+                            <td class="px-4 py-4 text-gray-600">Cuantitativo</td>
+                            <td class="px-4 py-4 text-blue-600 font-mono">(CN / TC) x 100%</td>
+                            <td class="px-4 py-4 text-green-600">≥ 20% Mensual</td>
+                            <td class="px-4 py-4">A. Administrativa</td>
+                            <td class="px-4 py-4 text-sm">Mensual: Comparar el porcentaje de crecimiento real vs. la meta.</td>
+                            <td class="px-4 py-4 text-sm">Si es &lt; 20%: Modificar contenido (pasar de informativo a interactivo o videos).</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-4 font-semibold text-gray-800">Interacción en redes sociales</td>
+                            <td class="px-4 py-4 text-gray-600">Cuantitativo</td>
+                            <td class="px-4 py-4 text-blue-600 font-mono">(Likes + Msj + Coment.) / Total</td>
+                            <td class="px-4 py-4 text-green-600">↑ 30% Mensual</td>
+                            <td class="px-4 py-4">E. Publicidad</td>
+                            <td class="px-4 py-4 text-sm">Semanal/Mensual: Medir el incremento de las interacciones totales.</td>
+                            <td class="px-4 py-4 text-sm">Si el crecimiento es &lt; 10%: Duplicar la inversión en publicidad y lanzar una promoción.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-4 font-semibold text-gray-800">Percepción de los proveedores</td>
+                            <td class="px-4 py-4 text-gray-600">Cualitativo</td>
+                            <td class="px-4 py-4 text-blue-600 font-mono">Encuestas de Satisfacción</td>
+                            <td class="px-4 py-4 text-green-600">Opinión positiva ≥ 90% Trimestral</td>
+                            <td class="px-4 py-4">Coordinador Operativo</td>
+                            <td class="px-4 py-4 text-sm">Trimestral: Analizar el promedio de la calificación de las encuestas.</td>
+                            <td class="px-4 py-4 text-sm">Si la satisfacción es &lt; 85%: Realizar una capacitación obligatoria en servicio al cliente.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- INDICADORES CLAVE DE DESEMPEÑO - OBJETIVO 2 -->
+        <div class="bg-white shadow-xl rounded-xl p-6 mb-10">
+            <h3 class="text-2xl font-bold text-blue-700 mb-4 border-b-2 border-blue-100 pb-2">
+                Objetivo 2: Mejorar la organización interna y la eficiencia del trabajo
+            </h3>
+            <p class="text-gray-600 mb-4">Métricas enfocadas en la productividad del equipo operativo.</p>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 kpi-table rounded-lg">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tl-lg">KPI</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Tipo</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Fórmula</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Meta</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Responsable</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Evaluación</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tr-lg">Mecanismo de Corrección</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-4 py-4 font-semibold text-gray-800">Índice de Productividad del Equipo</td>
+                            <td class="px-4 py-4 text-gray-600">Cuantitativo</td>
+                            <td class="px-4 py-4 text-blue-600 font-mono">Kg. Procesados / Horas Trabajadas</td>
+                            <td class="px-4 py-4 text-green-600">Incremento del 10% Trimestral</td>
+                            <td class="px-4 py-4">Coordinador Operativo</td>
+                            <td class="px-4 py-4 text-sm">Semanal: Calcular el promedio de kilogramos procesados por hora.</td>
+                            <td class="px-4 py-4 text-sm">Si la meta no se cumple: Reestructurar procesos internos y capacitar en flujo de trabajo.</td>
+                        </tr>
+                        <!-- Se añadió el KPI de Inventario, completando los campos faltantes -->
+                        <tr>
+                            <td class="px-4 py-4 font-semibold text-gray-800">Diferencia de Inventario</td>
+                            <td class="px-4 py-4 text-gray-600">Cuantitativo</td>
+                            <td class="px-4 py-4 text-blue-600 font-mono">(Inv. Sistema - Inv. Físico) / Inv. Sistema</td>
+                            <td class="px-4 py-4 text-green-600">Menor a 1%</td>
+                            <td class="px-4 py-4">Líder de Almacén</td>
+                            <td class="px-4 py-4 text-sm">Mensual: Comparar el valor del inventario registrado vs. el físico.</td>
+                            <td class="px-4 py-4 text-sm">Si es mayor a 1%: Auditoría de puntos de control de pesaje y ajuste en capacitación de conteo.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INDICADORES CLAVE DE DESEMPEÑO - OBJETIVO 3 -->
+        <div class="bg-white shadow-xl rounded-xl p-6">
+            <h3 class="text-2xl font-bold text-blue-700 mb-4 border-b-2 border-blue-100 pb-2">
+                Objetivo 3: Incorporar tecnología y herramientas modernas
+            </h3>
+            <p class="text-gray-600 mb-4">Métricas enfocadas en la adopción y el uso efectivo de nuevas tecnologías.</p>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 kpi-table rounded-lg">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tl-lg">KPI</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Tipo</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Fórmula</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Meta</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Responsable</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Evaluación</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider rounded-tr-lg">Mecanismo de Corrección</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-4 py-4 font-semibold text-gray-800">Porcentaje de uso de la nueva tecnología</td>
+                            <td class="px-4 py-4 text-gray-600">Cuantitativo</td>
+                            <td class="px-4 py-4 text-blue-600 font-mono">No. Transacciones Digitales / Total Transacciones x 100%</td>
+                            <td class="px-4 py-4 text-green-600">100% de uso del sistema</td>
+                            <td class="px-4 py-4">A. Administrativo</td>
+                            <td class="px-4 py-4 text-sm">Diario/Semanal: Auditoría aleatoria de transacciones.</td>
+                            <td class="px-4 py-4 text-sm">Si el uso es &lt; 100%: Revisar fallas técnicas. Si no hay, aplicar recordatorios/sanciones.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+                
+            `,
+            conclusiones: `
+                <h2 class="main-title">5. Conclusiones y Referencias</h2>
+                <div class="space-y-6">
+                    
+                    <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2">
+            5. Conclusiones y Aprendizajes
+        </h2>
+
+        <!-- RECUADRO AMARILLO (CONCLUSIÓN/REFLEXIÓN) -->
+        <div class="text-lg text-gray-800 p-6 bg-amber-50 rounded-xl italic border-l-8 border-amber-600 shadow-md mb-8">
+            <p class="font-bold mb-3 text-amber-900">Reflexión del Equipo: Aplicación de la Teoría al Caso Real (CHATARRERÍA LOS PRIMOS 7)</p>
+            <p>
+                Al trasladar la teoría del proceso administrativo al caso real, confirmamos que los principios clásicos (Planeación, Organización, Dirección y Control) son fundamentales, incluso en empresas de tamaño PYME con un enfoque operativo tradicional, como Chatarrería Los Primos 7. La clave reside en cómo se adaptan las herramientas formales a la practicidad del día a día.
+            </p>
+        </div>
+
+        <!-- LISTA DE APRENDIZAJES DETALLADOS (Similar a list-group-flush) -->
+        <h3 class="text-2xl font-bold text-blue-700 mb-4">Aprendizajes Clave Obtenidos</h3>
+
+        <div class="bg-white border border-gray-200 rounded-xl shadow-lg divide-y divide-gray-100">
+            <!-- Item 1 -->
+            <div class="p-4 hover:bg-gray-50 transition duration-150 ease-in-out">
+                <span class="font-bold text-blue-600 mr-2">1. Eficiencia de la Estructura Funcional:</span> 
+                La estructura funcional es eficiente para PYMES con foco operativo: la especialización simple permite a los empleados centrarse en sus tareas clave.
+            </div>
+            <!-- Item 2 -->
+            <div class="p-4 hover:bg-gray-50 transition duration-150 ease-in-out">
+                <span class="font-bold text-blue-600 mr-2">2. Liderazgo Transaccional Práctico:</span> 
+                El liderazgo transaccional es práctico para la ejecución: es altamente efectivo al vincular directamente el rendimiento a una recompensa medible, crucial para la precisión y el cumplimiento de normas.
+            </div>
+            <!-- Item 3 -->
+            <div class="p-4 hover:bg-gray-50 transition duration-150 ease-in-out">
+                <span class="font-bold text-blue-600 mr-2">3. La Comunicación en la Multisede:</span> 
+                La comunicación es clave en la multisede: el uso de canales formales e informales (WhatsApp) entre sucursales es una adaptación moderna esencial para garantizar la coordinación en tiempo real.
+            </div>
+            <!-- Item 4 -->
+            <div class="p-4 hover:bg-gray-50 transition duration-150 ease-in-out">
+                <span class="font-bold text-blue-600 mr-2">4. Transparencia y Control:</span> 
+                El control debe ser transparente: el KPI de "cero errores de pesaje" establece un vínculo directo entre la calidad del trabajo del operario y su reconocimiento/incentivo, reforzando la integridad.
+            </div>
+        </div>
+
+    </div>
+
+                    <!-- NUEVAS REFERENCIAS BIBLIOGRÁFICAS -->
+                    <h3 class="text-2xl font-bold text-blue-700 mb-3 border-b-2 pb-1 flex items-center mt-8">
+                        <i data-lucide="book-open" class="w-6 h-6 mr-2 text-amber-500"></i>
+                        Referencias Bibliográficas (APA 7ª Edición)
+                    </h3>
+                    <!-- Contenedor con estilo de tarjeta Tailwind para las referencias -->
+                    <div class="p-5 bg-white rounded-xl shadow-lg border border-gray-200">
+                        <ul class="space-y-3 text-sm text-gray-700">
+                            <!-- Referencia 1 -->
+                            <li class="border-l-4 border-gray-300 pl-3">
+                                <span class="font-semibold">Chiavenato, I. (2017).</span> *Introducción a la teoría general de la administración*. McGraw-Hill.
+                            </li>
+                            <!-- Referencia 2 -->
+                            <li class="border-l-4 border-gray-300 pl-3">
+                                <span class="font-semibold">Koontz, H., & Weihrich, H. (2012).</span> *Administración: una perspectiva global y empresarial* (14.ª ed.). McGraw-Hill.
+                            </li>
+                            <!-- Referencia 3 (Nueva) -->
+                            <li class="border-l-4 border-gray-300 pl-3">
+                                <span class="font-semibold">Robbins, S. P., & Coulter, M. (2018).</span> *Administración* (14.ª ed.). Pearson Educación.
+                            </li>
+                            <!-- Referencia 4 (Nueva, Manuscrito) -->
+                            <li class="border-l-4 border-gray-300 pl-3">
+                                <span class="font-semibold">García Piñeros, L. T., Lemus Achipiz, I., Valbuena Castañeda, P. I., Barrera Quintana, M. C. (2025).</span> Chatarrería Los Primos 7: Proceso Administrativo [Manuscrito no publicado]. Uniminuto.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            Preguntas: `
+                 <h2 class="main-title">5. PREGUNTAS A RESPONDER Y CONCLUSIONES ✨</h2>
+                <p class="text-lg text-gray-700 mb-6">
+                    Esta sección cumple con la fase reflexiva del proyecto, evidenciando el aprendizaje significativo del equipo y el análisis completo del caso de Los Primos 7.
+                </p>
+
+                <!-- ========================================================================= -->
+                <!-- PREGUNTA 1: ¿Cómo aplica cada fase del proceso administrativo? -->
+                <!-- ========================================================================= -->
+                <div class="bg-gray-50 p-6 rounded-xl shadow-xl border border-gray-200 mb-8">
+                    <h3 class="text-2xl font-bold text-gray-800 text-center mb-4 border-b pb-2">1. ¿Cómo aplica la empresa seleccionada cada fase del proceso administrativo?</h3>
+                    <hr class="mb-4">
+                    <p class="mb-4 text-gray-700">Al aplicar los conceptos de Koontz, Weihrich, y Chiavenato a Los Primos 7, comprendimos que:</p>
+                    
+                    <!-- Planeación -->
+                    <h4 class="text-xl font-bold text-blue-700 mt-6 mb-2">Planeación</h4>
+                    <p class="text-gray-600">Aunque no se ha detallado en los documentos, la planeación se evidencia en la existencia de metas mensuales de volumen de chatarra procesada y el enfoque en la transparencia y eficiencia como objetivos centrales. La existencia de la meta de volumen establece un plan cuantitativo que guía las operaciones diarias y el sistema de incentivos.</p>
+                    
+                    <!-- Organización -->
+                    <h4 class="text-xl font-bold text-blue-700 mt-6 mb-2">Organización</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>La empresa utiliza una Estructura Organizacional Funcional Simple. Esta estructura agrupa las tareas por especialidad (Administrativo, Operaciones, Compras), lo cual es apropiado para su tamaño y el control centralizado por parte de la Gerencia General (Fundadores).</li>
+                        <li>Jerarquía: La estructura es clara:   
+                            <ul class="ml-6 list-disc space-y-1 mt-1">
+                                <li>Nivel Superior: Gerencia General.</li>
+                                <li>Nivel Operativo Alto: Coordinador Operativo y Área Administrativa y Comercial.</li>
+                                <li>Nivel Operativo Bajo: Personal clave como Encargado de Recepción y Pesaje, Asistente Contable, y Encargado de Compras y Ventas.</li>
+                            </ul>
+                        </li>
+                        <li>Decisión Evidenciada: La separación de funciones clave como Logística y Compras/Ventas garantiza que cada área se centre en sus objetivos específicos (eficiencia de rutas vs. negociación de precios).</li>
+                    </ul>
+                    
+                    <!-- Dirección -->
+                    <h4 class="text-xl font-bold text-blue-700 mt-6 mb-2">Dirección</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>Se aplica un estilo de Liderazgo Transaccional. Se basa en la claridad de roles y el uso de recompensas (bonos por volumen de chatarra, pago de horas extras) para motivar el cumplimiento de los procesos y metas.</li>
+                        <li>Comunicación: Se implementa un Plan de Comunicación:    
+                            <ul class="ml-6 list-disc space-y-1 mt-1">
+                                <li>Vertical (Descendente): Uso de reuniones matutinas (briefings) para asignar rutas y metas diarias, garantizando que las decisiones gerenciales lleguen al personal operativo.</li>
+                                <li>Horizontal: Uso de grupos de mensajería (WhatsApp) para coordinar la logística y la capacidad de recepción entre las 3 sucursales, vital para un negocio multisede.</li>
+                            </ul>
+                        </li>
+                        <li>Motivación: Se combina la estabilidad financiera con el reconocimiento moral: Incentivos monetarios y el programa "Empleado del Mes" asociado a un KPI clave (cero errores de pesaje).</li>
+                    </ul>
+                    
+                    <!-- Control -->
+                    <h4 class="text-xl font-bold text-blue-700 mt-6 mb-2">Control</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>Vínculo con Dirección: El control está directamente ligado a la fase de Dirección a través del sistema de recompensas. La Gerencia establece un estándar y ofrece un incentivo si se alcanza o se supera.</li>
+                        <li>Medición: La evaluación de la gestión se realiza mediante los KPI y métricas definidos.</li>
+                        <li>Estrategia Clave: La medición de "cero errores de pesaje" es una estrategia de control de calidad fundamental que busca la transparencia, un valor central de la empresa.</li>
+                    </ul>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- PREGUNTA 2: Estrategias, Estructuras y Decisiones Evidenciadas -->
+                <!-- ========================================================================= -->
+                <div class="bg-gray-50 p-6 rounded-xl shadow-xl border border-gray-200 mb-8">
+                    <h3 class="text-2xl font-bold text-gray-800 text-center mb-4 border-b pb-2">2. ¿Qué estrategias, estructuras o decisiones se evidencian?</h3>
+                    <hr class="mb-4">
+                    <table class="min-w-full divide-y divide-gray-200 shadow-lg rounded-lg overflow-hidden text-sm">
+                        <thead class="bg-blue-700 text-white">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium uppercase tracking-wider">Tipo</th>
+                                <th class="px-4 py-3 text-left font-medium uppercase tracking-wider">Elemento</th>
+                                <th class="px-4 py-3 text-left font-medium uppercase tracking-wider">Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Estructura</td>
+                                <td class="px-4 py-3">Estructura Funcional Simple</td>
+                                <td class="px-4 py-3">Permite la especialización (Operaciones, Compras, Administrativo) y mantiene el control centralizado por los Fundadores.</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Estrategia (Liderazgo)</td>
+                                <td class="px-4 py-3">Liderazgo Transaccional</td>
+                                <td class="px-4 py-3">El estilo se enfoca en el intercambio: esfuerzo y cumplimiento de procesos a cambio de recompensas (bonos).</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Estrategia (Comunicación)</td>
+                                <td class="px-4 py-3">Canales Formales Anidados</td>
+                                <td class="px-4 py-3">Uso de reuniones y grupos de mensajería para asegurar la fluidez de información Vertical (órdenes) y Horizontal (coordinación).</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td>Decisión (Recursos Humanos)</td>
+                                <td>Incentivo por Desempeño</td>
+                                <td>La Gerencia tomó la decisión de alinear los bonos directamente al volumen de chatarra, incentivando la productividad.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ========================================================================= -->
+                <!-- PREGUNTA 3: Resultados o Indicadores (KPI) para Evaluar la Gestión -->
+                <!-- ========================================================================= -->
+                <div class="bg-gray-50 p-6 rounded-xl shadow-xl border border-gray-200 mb-8">
+                    <h3 class="text-2xl font-bold text-gray-800 text-center mb-4 border-b pb-2">3. ¿Qué resultados o indicadores (KPI) se utilizan para evaluar la gestión?</h3>
+                    <hr class="mb-4">
+                    <p class="text-gray-700">Los indicadores (Key Performance Indicators o KPI) se utilizan para medir el éxito de las fases de Planeación, Organización y Dirección. Para una explicación detallada de cómo se implementan, revise la <button onclick="loadPage('control')" class="text-blue-700 font-bold underline hover:text-blue-900 transition duration-150">Fase de Control</button>.</p>
+                    <table class="min-w-full divide-y divide-gray-200 shadow-lg rounded-lg overflow-hidden text-sm mt-3">
+                        <thead class="bg-blue-700 text-white">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium uppercase tracking-wider">Indicador (KPI)</th>
+                                <th class="px-4 py-3 text-left font-medium uppercase tracking-wider">Fase del Proceso</th>
+                                <th class="px-4 py-3 text-left font-medium uppercase tracking-wider">Objetivo de Medición</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Volumen de Chatarra Procesada</td>
+                                <td class="px-4 py-3">Planeación / Control</td>
+                                <td class="px-4 py-3">Mide el cumplimiento de las metas de productividad y la efectividad del incentivo de desempeño.</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Cero Errores de Pesaje</td>
+                                <td class="px-4 py-3">Control / Calidad</td>
+                                <td class="px-4 py-3">Mide la transparencia y precisión operativa. Es la base para el reconocimiento de "Empleado del Mes".</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Eficiencia en la Logística / Rutas</td>
+                                <td class="px-4 py-3">Organización / Dirección</td>
+                                <td class="px-4 py-3">Mide la efectividad de la planificación de rutas por el Jefe de Logística, buscando la máxima rentabilidad.</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td class="px-4 py-3">Tasa de Rotación de Personal</td>
+                                <td class="px-4 py-3">Dirección / RRHH</td>
+                                <td class="px-4 py-3">Se mide indirectamente por el enfoque en **estabilidad y desarrollo** (entrenamiento constante), buscando mantener el equipo motivado y reducir la rotación.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `,
+        };
+
+        const contentArea = document.getElementById('content-area');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Función para cargar el contenido de la página seleccionada
+        function loadPage(pageName) {
+            // 1. Mostrar contenido
+            const content = pageContent[pageName] || pageContent['inicio'];
+            contentArea.innerHTML = content;
+            
+            // Re-renderizar iconos de Lucide dentro del nuevo contenido
+            lucide.createIcons();
+            
+            // 2. Aplicar la clase de animación para el efecto de transición
+            contentArea.classList.add('fade-in');
+            
+            // 3. Actualizar el estado activo del botón de navegación
+            navLinks.forEach(link => {
+                link.classList.remove('nav-active');
+                if (link.getAttribute('data-page') === pageName) {
+                    link.classList.add('nav-active');
+                }
+            });
+
+            // 4. Quitar la clase de animación después de un tiempo para que se pueda volver a aplicar
+            setTimeout(() => {
+                contentArea.classList.remove('fade-in');
+            }, 500);
+        }
+
+        // Función para actualizar la fecha y hora cada segundo
+        function updateDateTime() {
+            const now = new Date();
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+
+            const dateString = now.toLocaleDateString('es-ES', optionsDate);
+            const timeString = now.toLocaleTimeString('es-ES', optionsTime);
+
+            const dateTimeElement = document.getElementById('current-datetime');
+            if (dateTimeElement) {
+                // Formato: Domingo, 24 de noviembre de 2024 | 05:55:00 PM
+                dateTimeElement.textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1) + ' | ' + timeString;
+            }
+        }
+
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carga la página de inicio por defecto
+            loadPage('inicio');
+
+            // Inicializa y comienza a actualizar la fecha/hora
+            updateDateTime(); // Ejecuta inmediatamente para evitar el parpadeo
+            setInterval(updateDateTime, 1000); // Actualiza cada segundo
+
+            // Asignar listeners a los botones de navegación
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = e.currentTarget.getAttribute('data-page');
+                    loadPage(page);
+                    // Opcional: desplazar al inicio del área de contenido en dispositivos móviles
+                    if (window.innerWidth < 768) {
+                         contentArea.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
